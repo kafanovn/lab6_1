@@ -1,0 +1,82 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Closing="WpfApp1_Closing"  
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="lab 6.1" Height="583" Width="1158">
+    <Window.Resources>
+        <local:IntConvert x:Key="IntConvert"/>
+        <local:FloatConvert x:Key="FloatConvert"/>
+        <DataTemplate x:Key="time">
+            <StackPanel>
+                <TextBlock Text="{Binding StringFormat=Функция: {0}, Path=Grid.VMf}" />
+                <TextBlock Text="{Binding StringFormat=Количество точек: {0}, Path=Grid.N}" />
+                <TextBlock Text="{Binding StringFormat=Левая граница: {0}, Path=Grid.Min}" />
+                <TextBlock Text="{Binding StringFormat=Правая граница: {0}, Path=Grid.Max}" />
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+    <StackPanel>
+        <Menu Height="20" Width="1175" RenderTransformOrigin="0.298,-0.49">
+            <MenuItem Header="File">
+                <MenuItem Header="New"  Click="New_Click" />
+                <MenuItem Header="Open" Click="Open_Click"/>
+                <MenuItem Header="Save" Click="Save_Click"/>
+            </MenuItem>
+            <MenuItem Header="Edit" >
+                <MenuItem Header="Add VMTime" Click="Add_VMTime"/>
+                <MenuItem Header="Add VMAccuracy" Click="Add_VMAccuracy"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <ComboBox Name="comboBoxIn" SelectedValue="{Binding Path=VMGrid.VMf}" Margin="7,100,882,-79" RenderTransformOrigin="0.491,0.573"/>
+            <TextBlock Margin="0,0,803,0" >
+                Количество точек; левая граница; правая граница
+            </TextBlock>
+            <TextBlock Text="N" Margin="10,33,1081,-33"/>
+            <TextBlock Text="Min" Margin="77,33,1005,-33"/>
+            <TextBlock Text="Max" Margin="159,33,922,-33"/>
+            <TextBlock Text="Отношение времени вычисления в режиме точности VML_EP к времени вычисления без Intel MKL" TextWrapping="Wrap" Margin="0,391,803,-391"/>
+            <TextBlock Text="{Binding SelectedItem.Time_EP_base, ElementName=Time, Converter={StaticResource FloatConvert}}" Margin="0,440,796,-440"/>
+            <TextBlock Text="Отношение времени вычисления в режиме точности VML_HA к времени вычисления без Intel MKL" TextWrapping="Wrap" Margin="355,391,480,-391"/>
+            <TextBlock Text="{Binding SelectedItem.Time_HA_base,ElementName=Time, Converter={StaticResource FloatConvert}}" Margin="345,440,451,-440"/>
+            <TextBox Text="{Binding VMGrid.N, Converter={StaticResource IntConvert}, UpdateSourceTrigger=PropertyChanged}" Margin="10,52,1092,-33" />
+            <TextBox Text="{Binding VMGrid.Min, Converter={StaticResource FloatConvert}, UpdateSourceTrigger=PropertyChanged}" Margin="77,52,1020,-33" />
+            <TextBox Text="{Binding VMGrid.Max, Converter={StaticResource FloatConvert}, UpdateSourceTrigger=PropertyChanged}" Margin="159,52,948,-33" />
+            <TextBlock Text="Минимальное отношение времени вычисления в режиме точности VML_EP к времени вычисления без Intel MKL" TextWrapping="Wrap" Margin="678,387,147,-387"/>
+            <TextBlock Text="{Binding Time_HA_base, Converter={StaticResource FloatConvert}, UpdateSourceTrigger=PropertyChanged}" Margin="712,440,395,-440" />
+            <TextBlock Text="Минимальное отношение времени вычисления в режиме точности VML_HA к времени вычисления без Intel MKL" TextWrapping="Wrap" Margin="678,298,147,-298"/>
+            <TextBlock Text="{Binding Time_EP_base, Converter={StaticResource FloatConvert}, UpdateSourceTrigger=PropertyChanged}" Margin="738,334,370,-334" />
+            <TextBox RenderTransformOrigin="0.426,6.577" Margin="10,491,507,-492" Text="{Binding Path=public_str_change, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <Grid Height="493" Width="1189">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="929*"/>
+            </Grid.ColumnDefinitions>
+            <ListBox ItemTemplate="{StaticResource time}" Name="Time" ItemsSource="{Binding VMBenchmark.VMTimes}" SelectedItem="{Binding Selected}" Margin="10,85,817,146" RenderTransformOrigin="0.509,0.505" >
+            </ListBox>
+            <ListBox ItemTemplate="{StaticResource time}" Name="Accuracy" ItemsSource="{Binding VMBenchmark.VMAccuracies}" SelectedItem="{Binding Selected}" Margin="172,85,817,146" >
+            </ListBox>
+            <StackPanel Margin="10,111,34,63" Grid.ColumnSpan="3" Grid.Row="1">
+                <TextBlock Text="Значение аргумента, при котором максимально отличаются значения функции, вычисленные в режимах WML_EP и WML_HA:" TextWrapping="Wrap" Width="306"/>
+                <TextBlock Text="{Binding SelectedItem.Max_sub_arg, ElementName=Accuracy}" TextWrapping="Wrap" Height="22" Width="305"/>
+                <TextBlock Text="соответствующие значения функции(WML_HA):" TextWrapping="Wrap" Width="306"/>
+                <TextBlock Text="{Binding SelectedItem.Max_sub_value_HA, ElementName=Accuracy}" TextWrapping="Wrap" Height="26" Width="299"/>
+                <TextBlock Text="соответствующие значения функции(WML_EP):" TextWrapping="Wrap" Height="22" Width="315" RenderTransformOrigin="0.5,0.5">
+                    <TextBlock.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform/>
+                            <SkewTransform/>
+                            <RotateTransform Angle="0.107"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+                <TextBlock Text="{Binding SelectedItem.Max_sub_value_EP, ElementName=Accuracy}" TextWrapping="Wrap" Height="34" Width="301"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</Window>
